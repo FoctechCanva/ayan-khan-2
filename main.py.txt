@@ -1,0 +1,94 @@
+import os
+import logging
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Application, CommandHandler, CallbackContext
+from telegram.constants import ParseMode
+
+# Bot Configuration
+BOT_TOKEN = os.getenv("8031287037:AAHvhktR7r2SwQn7GJuQRVrLIS759eLf6ao")
+IMAGE_URL = "https://i.ibb.co/0nXwKZJ/ad-banner.jpg"  # Replace with your image URL
+CAPTION = """
+🔍 Stable Daily USDT Earnings 🔍
+I Long-Term & Secure – Join Now!
+
+Claim Fast Very Limited !! 14:21
+
+Free Code For 10000 Users
+
+Yono-777 BIG PromoCode Claim Fastt All User's !!
+
+Join All Channel's Claim Fastt 🌤️ 14:21
+"""
+
+# Button Configuration - Replace with your actual Telegram invite links
+BUTTONS = [
+    {"text": "Join 💬️", "url": "https://t.me/+ubKdvq2fjv1lM2Q1"},
+    {"text": "Join 💬️", "url": "https://t.me/+ubKdvq2fjv1lM2Q1"},
+    {"text": "Join 💬️", "url": "https://t.me/+ubKdvq2fjv1lM2Q1"},
+    {"text": "Join 💬️", "url": "https://t.me/+ubKdvq2fjv1lM2Q1"},
+    {"text": "Join 💬️", "url": "https://t.me/+ubKdvq2fjv1lM2Q1"},
+    {"text": "Join 💬️", "url": "https://t.me/+ubKdvq2fjv1lM2Q1"},
+    {"text": "⭐️ Claim ⭐️", "url": "https://t.me/+ubKdvq2fjv1lM2Q1l"}
+]
+
+# Set up logging
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO
+)
+logger = logging.getLogger(__name__)
+
+async def start(update: Update, context: CallbackContext) -> None:
+    """Send welcome message with image and buttons"""
+    try:
+        # Create inline keyboard
+        keyboard = [
+            [
+                InlineKeyboardButton(BUTTONS[0]["text"], url=BUTTONS[0]["url"]),
+                InlineKeyboardButton(BUTTONS[1]["text"], url=BUTTONS[1]["url"]),
+                InlineKeyboardButton(BUTTONS[2]["text"], url=BUTTONS[2]["url"])
+            ],
+            [
+                InlineKeyboardButton(BUTTONS[3]["text"], url=BUTTONS[3]["url"]),
+                InlineKeyboardButton(BUTTONS[4]["text"], url=BUTTONS[4]["url"]),
+                InlineKeyboardButton(BUTTONS[5]["text"], url=BUTTONS[5]["url"])
+            ],
+            [InlineKeyboardButton(BUTTONS[6]["text"], url=BUTTONS[6]["url"])]
+        ]
+        
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        # Send message with photo and buttons
+        await update.message.reply_photo(
+            photo=IMAGE_URL,
+            caption=CAPTION,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup
+        )
+    except Exception as e:
+        logger.error(f"Error in start command: {e}")
+
+def main() -> None:
+    """Start the bot"""
+    # Create Application
+    application = Application.builder().token(BOT_TOKEN).build()
+
+    # Add command handler
+    application.add_handler(CommandHandler("start", start))
+
+    # Get PORT from environment (required for Render)
+    port = int(os.environ.get('PORT', 5000))
+    
+    # Get Render webhook URL
+    webhook_url = os.getenv("RENDER_EXTERNAL_URL") + "/" + BOT_TOKEN
+    
+    # Webhook configuration for Render
+    application.run_webhook(
+        listen="0.0.0.0",
+        port=port,
+        webhook_url=webhook_url,
+        url_path=BOT_TOKEN
+    )
+
+if __name__ == "__main__":
+    main()
